@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/erhanozgan/Desktop/jekirdek/jekirdekCase/jekirdekCase/obj/Debug/net8.0/scopedcss/projectbundle/jekirdekCase.bundle.scp.css",
+      "PackagePath": "staticwebassets/jekirdekCase.bundle.scp.css"
+    },
+    {
+      "Id": "/Users/erhanozgan/Desktop/jekirdek/jekirdekCase/jekirdekCase/wwwroot/app.css",
+      "PackagePath": "staticwebassets/app.css"
+    },
+    {
+      "Id": "/Users/erhanozgan/Desktop/jekirdek/jekirdekCase/jekirdekCase/wwwroot/bootstrap/bootstrap.min.css",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css"
+    },
+    {
+      "Id": "/Users/erhanozgan/Desktop/jekirdek/jekirdekCase/jekirdekCase/wwwroot/bootstrap/bootstrap.min.css.map",
+      "PackagePath": "staticwebassets/bootstrap/bootstrap.min.css.map"
+    },
+    {
+      "Id": "/Users/erhanozgan/Desktop/jekirdek/jekirdekCase/jekirdekCase/wwwroot/favicon.png",
+      "PackagePath": "staticwebassets/favicon.png"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.jekirdekCase.props",
+      "PackagePath": "build\\jekirdekCase.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.jekirdekCase.props",
+      "PackagePath": "buildMultiTargeting\\jekirdekCase.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.jekirdekCase.props",
+      "PackagePath": "buildTransitive\\jekirdekCase.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.jekirdekCase.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

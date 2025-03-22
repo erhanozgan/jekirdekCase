@@ -1,0 +1,57 @@
+@page
+@model jekirdekCase.Models.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Giriş Yap</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label for="Username">Kullanıcı Adı</label>
+        <input type="text" class="form-control" id="Username" name="Username" required />
+    </div>
+    <div class="form-group">
+        <label for="Password">Şifre</label>
+        <input type="password" class="form-control" id="Password" name="Password" required />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"]?.ToString()))
+    {
+        <div class="alert alert-danger mt-3">
+            @ViewData["ErrorMessage"]
+        </div>
+    }
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector("form").addEventListener("submit", async function (event) {
+                event.preventDefault(); // Sayfanın yeniden yüklenmesini engelle
+
+                const username = document.getElementById("Username").value;
+                const password = document.getElementById("Password").value;
+
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem("jwt_token", data.token); // ✅ Token'ı kaydet
+
+                    alert("Giriş başarılı! Yönlendiriliyorsunuz...");
+                    window.location.href = "/customers/customers"; // ✅ Yönlendir
+                } else {
+                    alert("Giriş başarısız! Kullanıcı adı veya şifre hatalı.");
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,165 @@
+@page
+@model jekirdekCase.Pages.Customers.CustomersModel
+@{
+    ViewData["Title"] = "Müşteriler";
+}
+
+<h2>Müşteriler</h2>
+
+<table id="customersTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Email</th>
+            <th>Region</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Müşteri verileri burada yüklenecek -->
+    </tbody>
+</table>
+
+<!-- Yeni müşteri eklemek için modal -->
+<button id="addCustomerBtn" class="btn btn-primary" onclick="customerModal">Yeni Müşteri Ekle</button>
+
+<!-- DataTables ve jQuery Scriptleri -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script>
+        // Tüm AJAX isteklerinden önce JWT token'ı otomatik olarak ekle
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                var token = localStorage.getItem("jwt_token");
+                if (token) {
+                    console.log("Token Gönderiliyor:", token); // Konsolda token kontrolü
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                } else {
+                    console.warn("JWT Token Bulunamadı!");
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            // Eğer token yoksa, giriş sayfasına yönlendir
+            var token = localStorage.getItem("jwt_token");
+            if (!token) {
+                alert('Lütfen giriş yapın!');
+                window.location.href = '/Account/login';  // Login sayfasına yönlendirme
+            }
+
+            // DataTable'ı başlat
+            $('#customersTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "https://localhost:7053/api/customers",
+                    "type": "GET",
+                    "data": function(d) {
+                        return {
+                            draw: d.draw,
+                            start: d.start,
+                            length: d.length,
+                            searchValue: d.search.value,
+                            orderColumn: d.columns[d.order[0].column].data,
+                            orderDirection: d.order[0].dir
+                        };
+                    },
+                    "error": function(xhr, status, error) {
+                        console.error('Hata:', error);
+                    }
+                },
+                "columns": [
+                    { "data": "firstName" },
+                    { "data": "lastName" },
+                    { "data": "email" },
+                    { "data": "region" },
+                    {
+                        "data": "id",
+                        "render": function (data) {
+                            return `<button onclick="deleteCustomer(${data})">Sil</button>`;
+                        }
+                    }
+                ]
+            });
+
+            // Müşteri silme işlemi
+            window.deleteCustomer = function (id) {
+                if (confirm("Müşteriyi silmek istediğinizden emin misiniz?")) {
+                    $.ajax({
+                        url: `/api/customers/${id}`,
+                        type: 'DELETE',
+                        success: function () {
+                            $('#customersTable').DataTable().ajax.reload(); // Tabloyu yenile
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Silme işlemi hatası:', error);
+                            alert("Silme işlemi başarısız!");
+                        }
+                    });
+                }
+            };
+        });
+        
+        
+    </script>
+<!-- Yeni müşteri ekleme modalı -->
+<div id="customerModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Yeni Müşteri Ekle</h2>
+        <label>Ad:</label>
+        <input type="text" id="firstName" /><br />
+        <label>Soyad:</label>
+        <input type="text" id="lastName" /><br />
+        <label>Email:</label>
+        <input type="email" id="email" /><br />
+        <label>Region:</label>
+        <input type="text" id="region" /><br />
+        <button id="saveCustomer">Kaydet</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // ✅ Yeni müşteri modalını aç
+        $("#addCustomerBtn").click(function () {
+            $("#customerModal").show();
+        });
+
+        // ❌ Modalı kapat
+        $(".close").click(function () {
+            $("#customerModal").hide();
+        });
+
+        // ✅ Yeni müşteri ekle
+        $("#saveCustomer").click(function () {
+            var newCustomer = {
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                email: $("#email").val(),
+                region: $("#region").val()
+            };
+
+            $.ajax({
+                url: "https://localhost:7053/api/customers",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(newCustomer),
+                success: function () {
+                    alert("Müşteri eklendi!");
+                    $("#customerModal").hide();
+                    $("#customersTable").DataTable().ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ekleme hatası:", error);
+                    alert("Müşteri eklenirken hata oluştu.");
+                }
+            });
+        });
+    });
+</script>
+
+}

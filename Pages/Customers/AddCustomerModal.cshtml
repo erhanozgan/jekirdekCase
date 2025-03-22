@@ -1,0 +1,51 @@
+<div id="addCustomerModal" class="modal">
+    <div class="modal-content">
+        <h4>Yeni Müşteri Ekle</h4>
+        <form id="addCustomerForm">
+            <label for="firstName">Ad</label>
+            <input type="text" id="firstName" name="firstName" required />
+
+            <label for="lastName">Soyad</label>
+            <input type="text" id="lastName" name="lastName" required />
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+
+            <label for="region">Bölge</label>
+            <input type="text" id="region" name="region" required />
+
+            <button type="submit">Kaydet</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#addCustomerBtn').on('click', function () {
+        $('#addCustomerModal').show(); // Modal'ı göster
+    });
+
+    $('#addCustomerForm').on('submit', function (e) {
+        e.preventDefault();
+
+        var newCustomer = {
+            firstName: $('#firstName').val(),
+            lastName: $('#lastName').val(),
+            email: $('#email').val(),
+            region: $('#region').val()
+        };
+
+        $.ajax({
+            url: '/api/customers',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(newCustomer),
+            success: function () {
+                $('#addCustomerModal').hide(); // Modal'ı kapat
+                $('#customersTable').DataTable().ajax.reload(); // Tabloyu güncelle
+            },
+            error: function () {
+                alert('Müşteri eklenirken bir hata oluştu!');
+            }
+        });
+    });
+</script>
